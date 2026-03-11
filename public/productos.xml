@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<products>
+
+  <product>
+    <id>1</id>
+    <name>Audifonos</name>
+    <price>599</price>
+    <imageUrl>ACCAFT018_FG.webp</imageUrl>
+    <category>Audio</category>
+    <description>Audifonos inalambricos</description>
+    <inStock>true</inStock>
+  </product>
+
+  <product>
+    <id>2</id>
+    <name>Bocina</name>
+    <price>700</price>
+    <imageUrl>bici.webp</imageUrl>
+    <category>Audio</category>
+    <description>Bocina inalambrica</description>
+    <inStock>true</inStock>
+  </product>
+
+  <product>
+    <id>3</id>
+    <name>Computadora</name>
+    <price>7000</price>
+    <imageUrl>tope.webp</imageUrl>
+    <category>Tecnologia</category>
+    <description>Laptop con 16 GB de RAM util para la escuela</description>
+    <inStock>true</inStock>
+  </product>
+
+  <product>
+    <id>4</id>
+    <name>Computadora</name>
+    <price>7000</price>
+    <imageUrl>tope.webp</imageUrl>
+    <category>Tecnologia</category>
+    <description>Laptop con 16 GB de RAM util para la escuela</description>
+    <inStock>true</inStock>
+  </product>
+
+  <product>
+    <id>5</id>
+    <name>Computadora</name>
+    <price>7000</price>
+    <imageUrl>tope.webp</imageUrl>
+    <category>Tecnologia</category>
+    <description>Laptop con 16 GB de RAM util para la escuela</description>
+    <inStock>true</inStock>
+  </product>
+
+</products>
