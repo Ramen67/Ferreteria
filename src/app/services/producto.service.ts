@@ -38,6 +38,7 @@ export class ProductsService{
         category: this.getText(node, 'category'),
         description: this.getText(node, 'description'),
         inStock: this.getBoolean(node, 'inStock'),
+        stock: this.getNumber(node, 'stock'),
     }));
 }
         private getText(parent: Element, tag: string): string {

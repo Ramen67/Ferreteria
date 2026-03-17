@@ -9,6 +9,7 @@
     <category>Herramientas</category>
     <description>Martillo de acero con mango de acero de 20oz</description>
     <inStock>true</inStock>
+    <stock>5</stock>
   </product>
 
   <product>
@@ -19,6 +20,7 @@
     <category>Herramientas eléctricas</category>
     <description>Taladro eléctrico de pila con accesorios</description>
     <inStock>true</inStock>
+    <stock>3</stock>
   </product>
 
   <product>
@@ -29,6 +31,7 @@
     <category>Herramientas</category>
     <description>Set de 7 destornilladores de acero inoxidable</description>
     <inStock>true</inStock>
+    <stock>10</stock>
   </product>
 
   <product>
@@ -39,6 +42,7 @@
     <category>Medición</category>
     <description>Cinta métrica de 10 metros con carcasa de plástico</description>
     <inStock>true</inStock>
+    <stock>7</stock>
   </product>
 
   <product>
@@ -49,6 +53,7 @@
     <category>Materiales</category>
     <description>Envase de 19 litros de pintura acrílica para interiores</description>
     <inStock>true</inStock>
+    <stock>2</stock>
   </product>
 
 </products>

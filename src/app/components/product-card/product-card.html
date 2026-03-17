@@ -10,11 +10,11 @@
     <p class="meta">{{ product.category }}</p>
     <p class="desc">{{ product.description }}</p>
 
-    <p class="stock" [class.out]="!product.inStock">
-      @if (product.inStock) { En stock } @else { Agotado }
+    <p class="stock" [class.out]="stockDisponible() <= 0">
+      @if (stockDisponible() > 0) { En stock: {{ stockDisponible() }} } @else { Agotado }
     </p>
 
-    <button class="btn" [disabled]="!product.inStock" (click)="onAdd()">
+    <button class="btn" [disabled]="stockDisponible() <= 0" (click)="onAdd()">
       Agregar al carrito
     </button>
   </div>

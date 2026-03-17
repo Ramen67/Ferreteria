@@ -13,6 +13,10 @@ export class CarritoService {
     this.productosSignal.update((lista) => [...lista, producto]);
   }
 
+  cantidadEnCarrito(id: number): number {
+    return this.productosSignal().filter((p) => p.id === id).length;
+  }
+
   quitar(id: number) {
     this.productosSignal.update((lista) => {
       const index = lista.findIndex((p) => p.id === id);
