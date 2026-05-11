@@ -86,11 +86,19 @@ export class Check implements AfterViewInit {
     this.loading.set(true);
     this.error.set(null);
 
-    this.paypalService.capturarOrden(id).subscribe({
+    const items = this.carrito().map((item) => ({
+      id: item.id,
+      nombre: item.name,
+      cantidad: item.cantidad,
+      precio: item.price,
+    }));
+
+    this.paypalService.capturarOrden(id, items, this.total()).subscribe({
       next: (response) => {
         this.loading.set(false);
         this.paymentApproved.set(true);
         console.log('Pago capturado:', response);
+        this.carritoService.exportarXML();
         setTimeout(() => {
           this.carritoService.vaciar();
           this.router.navigate(['/catalogo']);

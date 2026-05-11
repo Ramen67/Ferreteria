@@ -83,31 +83,83 @@ export class CarritoService {
   }
 
   exportarXML() {
-    const items = this.itemsSignal();
-    let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<recibo>\n`;
+    const items = this.itemsSignal(); 
+    const total = this.total();
+    const iva = total * 0.16;
+    const subtotal = total;
+    const totalConIva = total + iva;
 
+    // Generar folio único
+    const folio = `TK-${String(Math.floor(Math.random() * 1000000)).padStart(6, '0')}`;
+
+    // Obtener fecha y hora actual
+    const ahora = new Date();
+    const fecha = ahora.toLocaleDateString('es-MX');
+    const hora = ahora.toLocaleTimeString('es-MX');
+
+    let xml = `<?xml version="1.0" encoding="UTF-8"?>
+<recibo>
+  <empresa>
+    <nombre>ToolMarket S.A. de C.V.</nombre>
+    <rfc>CTC240315AB1</rfc>
+    <direccion>Av. Vallarta, Col. Americana, Guadalajara, Jalisco, México</direccion>
+    <codigoPostal>44160</codigoPostal>
+  </empresa>
+
+  <encabezado>
+    <folio>${folio}</folio>
+    <fecha>${fecha}</fecha>
+    <hora>${hora}</hora>
+  </encabezado>
+
+  <productos>
+`;
+
+    // Agregar productos
     for (const item of items) {
-      xml += `  <producto>\n`;
-      xml += `    <id>${item.id}</id>\n`;
-      xml += `    <nombre>${this.escapeXml(item.name)}</nombre>\n`;
-      xml += `    <precio>${item.price}</precio>\n`;
-      xml += `    <cantidad>${item.cantidad}</cantidad>\n`;
-      xml += `    <subtotal>${item.price * item.cantidad}</subtotal>\n`;
-      if (item.description) {
-        xml += `    <descripcion>${this.escapeXml(item.description)}</descripcion>\n`;
-      }
-      xml += `  </producto>\n`;
+      const subtotalProducto = (item.price * item.cantidad).toFixed(2);
+      xml += `    <producto>
+      <nombre>${this.escapeXml(item.name)}</nombre>
+      <cantidad>${item.cantidad}</cantidad>
+      <precio>$${item.price.toFixed(2)}</precio>
+      <subtotal>$${subtotalProducto}</subtotal>
+    </producto>
+`;
     }
 
-    xml += `  <total>${this.total()}</total>\n`;
-    xml += `</recibo>`;
+    xml += `  </productos>
+
+  <resumen>
+    <subtotal>$${subtotal.toFixed(2)}</subtotal>
+    <iva>$${iva.toFixed(2)}</iva>
+    <total>$${totalConIva.toFixed(2)}</total>
+  </resumen>
+
+  <pago>
+    <metodo>Tarjeta de crédito/débito</metodo>
+    <formaSAT>28 - Tarjeta de débito</formaSAT>
+  </pago>
+
+  <facturacion>
+    <rfc>OEME080412HGA</rfc>
+    <nombre>Emiliano Ortega Monzón</nombre>
+    <regimen>612 - Personas Físicas con Actividades Empresariales</regimen>
+    <codigoPostalFiscal>44100</codigoPostalFiscal>
+    <usoCFDI>G03 - Gastos en general</usoCFDI>
+    <email>emiliano.ortega@example.com</email>
+  </facturacion>
+
+  <aviso>
+    <mensaje>Conserve este ticket para cualquier aclaración o facturación.</mensaje>
+  </aviso>
+</recibo>`;
 
     const blob = new Blob([xml], { type: 'application/xml' });
     const url = URL.createObjectURL(blob);
 
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'recibo.xml';
+    a.download = `recibo_${folio}.xml`;
     a.click();
 
     URL.revokeObjectURL(url);

@@ -1,8 +1,9 @@
 const { paypalConfig } = require("../config/paypal.config");
+const db = require("../config/db");
 
 function getBasicAuth() {
   return Buffer.from(
-    `${paypalConfig.clientId}:${paypalConfig.clientSecret}`
+    `${paypalConfig.clientId}:${paypalConfig.clientSecret}`,
   ).toString("base64");
 }
 
@@ -34,15 +35,17 @@ async function createPaypalOrder(orderData) {
     const price = Number(item.price ?? item.precio ?? 0);
 
     if (!name) throw new Error(`Item sin nombre: ${JSON.stringify(item)}`);
-    if (isNaN(price)) throw new Error(`Precio inválido en item: ${JSON.stringify(item)}`);
-    if (isNaN(quantity)) throw new Error(`Cantidad inválida en item: ${JSON.stringify(item)}`);
+    if (isNaN(price))
+      throw new Error(`Precio inválido en item: ${JSON.stringify(item)}`);
+    if (isNaN(quantity))
+      throw new Error(`Cantidad inválida en item: ${JSON.stringify(item)}`);
 
     return { name, quantity, price };
   });
 
   const itemTotal = normalizedItems.reduce(
     (acc, item) => acc + item.price * item.quantity,
-    0
+    0,
   );
 
   const body = {
@@ -99,7 +102,7 @@ async function capturePaypalOrder(orderId) {
         "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
-    }
+    },
   );
 
   const data = await response.json();
@@ -111,29 +114,78 @@ async function capturePaypalOrder(orderId) {
   return data;
 }
 
-module.exports = { getAccessToken, createPaypalOrder, capturePaypalOrder };
+// Función para actualizar el stock de los productos
+async function updateProductStock(items) {
+  return new Promise((resolve, reject) => {
+    try {
+      items.forEach((item) => {
+        const productId = item.id || item.productId;
+        const quantity = Number(item.quantity || item.cantidad || 0);
 
-async function capturePaypalOrder(orderId) {
-  const accessToken = await getAccessToken();
+        if (!productId) {
+          reject(new Error(`Producto sin ID: ${JSON.stringify(item)}`));
+          return;
+        }
 
-  const response = await fetch(
-    `${paypalConfig.baseUrl}/v2/checkout/orders/${orderId}/capture`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
+        const sql = "UPDATE productos SET stock = stock - ? WHERE id = ?";
+        db.query(sql, [quantity, productId], (error, result) => {
+          if (error) {
+            reject(new Error(`Error actualizando stock: ${error.message}`));
+            return;
+          }
+
+          const checkSql = "SELECT stock FROM productos WHERE id = ?";
+          db.query(checkSql, [productId], (error, rows) => {
+            if (error) {
+              reject(new Error(`Error verificando stock: ${error.message}`));
+              return;
+            }
+
+            if (rows[0].stock <= 0) {
+              const updateInStock = "UPDATE productos SET inStock = 0 WHERE id = ?";
+              db.query(updateInStock, [productId], (error) => {
+                if (error) {
+                  reject(new Error(`Error actualizando inStock: ${error.message}`));
+                }
+              });
+            }
+          });
+        });
+      });
+
+      resolve(true);
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+// Función para registrar la compra en la tabla compras
+async function recordPurchase(total, amountProducts) {
+  return new Promise((resolve, reject) => {
+    const sql = "INSERT INTO compras (total, amountProducts) VALUES (?, ?)";
+
+    db.query(
+      sql,
+      [parseInt(total), parseInt(amountProducts)],
+      (error, result) => {
+        if (error) {
+          reject(new Error(`Error registrando compra: ${error.message}`));
+          return;
+        }
+        resolve({
+          id: result.insertId,
+          total: parseInt(total),
+          amountProducts: parseInt(amountProducts),
+        });
       },
-    }
-  );
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(`Error capturando orden PayPal: ${JSON.stringify(data)}`);
-  }
-
-  return data;
+    );
+  });
 }
 
-module.exports = { getAccessToken, createPaypalOrder, capturePaypalOrder };
+module.exports = {
+  getAccessToken,
+  createPaypalOrder,
+  capturePaypalOrder,
+  updateProductStock,
+  recordPurchase,
+};

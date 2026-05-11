@@ -1,6 +1,8 @@
 const {
   createPaypalOrder,
   capturePaypalOrder,
+  updateProductStock,
+  recordPurchase,
 } = require("../services/paypal.service.js");
 
 async function createOrder(req, res) {
@@ -46,7 +48,7 @@ async function createOrder(req, res) {
 
 async function captureOrder(req, res) {
   try {
-    const { orderId } = req.body;
+    const { orderId, items, total } = req.body;
 
     if (!orderId) {
       return res.status(400).json({
@@ -54,9 +56,38 @@ async function captureOrder(req, res) {
       });
     }
 
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({
+        error: "items es obligatorio",
+      });
+    }
+
+    if (!total || Number(total) <= 0) {
+      return res.status(400).json({
+        error: "total es obligatorio y debe ser mayor a 0",
+      });
+    }
+
+    // Capturar la orden en PayPal
     const captureData = await capturePaypalOrder(orderId);
 
-    res.status(200).json(captureData);
+    // Contar el total de productos
+    const amountProducts = items.reduce(
+      (sum, item) => sum + (item.quantity || item.cantidad || 0),
+      0,
+    );
+
+    // Actualizar stock de los productos
+    await updateProductStock(items);
+
+    // Registrar la compra
+    const purchase = await recordPurchase(total, amountProducts);
+
+    res.status(200).json({
+      success: true,
+      paypalCapture: captureData,
+      purchase: purchase,
+    });
   } catch (error) {
     console.error("Error en captureOrder:", error.message);
 
