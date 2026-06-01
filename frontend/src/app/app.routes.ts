@@ -8,11 +8,11 @@ import { Register } from './components/auth/register/register';
 import { Profile } from './components/user/profile/profile';
 import { History } from './components/user/history/history';
 import { AdminProductos } from './components/admin/productos-admin/productos-admin';
-import { nonAdminGuard } from './components/core/guards/auth.guard';
+import { nonAdminGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'login' },
-  {path: 'principal', component: Principal},
+  { path: 'principal', component: Principal },
   { path: 'login', component: Login },
   { path: 'register', component: Register },
   { path: 'catalogo', component: CatalogoComponent },

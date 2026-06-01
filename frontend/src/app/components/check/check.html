@@ -8,7 +8,7 @@
   }
 
   @if (paymentApproved()) {
-    <div class="success-message">Pago completado exitosamente. Redirigiendo...</div>
+    <div class="success-message">Pago completado exitosamente. Se te enviara el recibo a tu correo. Redirigiendo...</div>
   }
 
   <div class="checkout-layout" [class.summary-only]="paymentApproved()">
@@ -72,10 +72,12 @@
         <h3>Total: {{ total() | currency: 'MXN' }}</h3>
       </div>
 
-      <div class="legal-summary">
-        <a [href]="terminosUrl" target="_blank" rel="noopener">Leer terminos y condiciones</a>
-        <a [href]="avisoPrivacidadUrl" target="_blank" rel="noopener">Leer aviso de privacidad</a>
-      </div>
+      @if (!paymentApproved()) {
+        <div class="legal-summary">
+          <a [href]="terminosUrl" target="_blank" rel="noopener">Leer terminos y condiciones</a>
+          <a [href]="avisoPrivacidadUrl" target="_blank" rel="noopener">Leer aviso de privacidad</a>
+        </div>
+      }
     </aside>
   </div>
 </section>

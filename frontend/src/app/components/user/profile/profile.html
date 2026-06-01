@@ -18,8 +18,6 @@
         <span><strong>Rol:</strong> {{ perfil.rol }}</span>
       </div>
 
-      
-
       <form class="profile-form" (ngSubmit)="guardarPerfil()">
         <label>
           Nombre
@@ -47,15 +45,15 @@
       </form>
 
       <section class="password-section">
-        <h3>Cambiar contrasena</h3>
+        <h3>Cambiar contraseña</h3>
         <div class="profile-form">
           <label>
-            Nueva contrasena
+            Nueva contraseña
             <input type="password" [(ngModel)]="nuevaContrasenia" name="nuevaContrasenia" />
           </label>
 
           <label>
-            Confirmar nueva contrasena
+            Confirmar nueva contraseña
             <input
               type="password"
               [(ngModel)]="confirmarNuevaContrasenia"
@@ -69,7 +67,7 @@
             (click)="cambiarContrasenia()"
             [disabled]="cambiandoContrasenia"
           >
-            {{ cambiandoContrasenia ? 'Cambiando...' : 'Cambiar contrasena' }}
+            {{ cambiandoContrasenia ? 'Cambiando...' : 'Cambiar contraseña' }}
           </button>
 
           @if (passwordError) {

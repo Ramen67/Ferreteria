@@ -137,7 +137,7 @@ export class Profile {
 
   cambiarContrasenia(): void {
     if (!this.nuevaContrasenia || !this.confirmarNuevaContrasenia) {
-      this.passwordError = 'Ingresa y confirma tu nueva contrasena';
+      this.passwordError = 'Ingresa y confirma tu nueva contraseña';
       this.passwordExito = '';
       this.cdr.detectChanges();
       this.scrollToMessage(this.passwordMessage);
@@ -145,7 +145,7 @@ export class Profile {
     }
 
     if (this.nuevaContrasenia !== this.confirmarNuevaContrasenia) {
-      this.passwordError = 'Las nuevas contrasenas no coinciden';
+      this.passwordError = 'Las nuevas contraseñas no coinciden';
       this.passwordExito = '';
       this.cdr.detectChanges();
       this.scrollToMessage(this.passwordMessage);
@@ -153,21 +153,21 @@ export class Profile {
     }
 
     if (this.nuevaContrasenia.length < 6) {
-      this.passwordError = 'La nueva contrasena debe tener al menos 6 caracteres';
+      this.passwordError = 'La nueva contraseña debe tener al menos 6 caracteres';
       this.passwordExito = '';
       this.cdr.detectChanges();
       this.scrollToMessage(this.passwordMessage);
       return;
     }
 
-    const contraseniaActual = window.prompt('Ingresa tu contrasena anterior');
+    const contraseniaActual = window.prompt('Ingresa tu contraseña anterior');
 
     if (contraseniaActual === null) {
       return;
     }
 
     if (!contraseniaActual) {
-      this.passwordError = 'La contrasena anterior es obligatoria';
+      this.passwordError = 'La contraseña anterior es obligatoria';
       this.passwordExito = '';
       this.cdr.detectChanges();
       this.scrollToMessage(this.passwordMessage);
@@ -180,7 +180,7 @@ export class Profile {
 
     this.userService.changePassword(contraseniaActual, this.nuevaContrasenia).subscribe({
       next: (response) => {
-        this.passwordExito = response?.mensaje || 'Contrasena actualizada correctamente';
+        this.passwordExito = response?.mensaje || 'contraseña actualizada correctamente';
         this.passwordError = '';
         this.nuevaContrasenia = '';
         this.confirmarNuevaContrasenia = '';
@@ -189,7 +189,7 @@ export class Profile {
         this.scrollToMessage(this.passwordMessage);
       },
       error: (error) => {
-        this.passwordError = error?.error?.error || 'No se pudo cambiar la contrasena';
+        this.passwordError = error?.error?.error || 'No se pudo cambiar la contraseña';
         this.passwordExito = '';
         this.cambiandoContrasenia = false;
         this.cdr.detectChanges();
